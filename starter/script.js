@@ -19,9 +19,18 @@ score0El.textContent = 0;
 score1El.textContent = 0;
 diceEl.classList.add('hidden');
 //the big current scores
-const score = [0, 0];
+const scores = [0, 0];
 let currentScore = 0;
 let activePlayer = 0;
+
+const switchPlayer = function () {
+  document.getElementById(`current--${activePlayer}`).textContent = 0;
+  currentScore = 0;
+  activePlayer = activePlayer === 0 ? 1 : 0;
+  //So we will use toggle now.And what toggle will do is that it will add the class if it is not there and if it is there, it will remove it
+  player0El.classList.toggle('player--active');
+  player1El.classList.toggle('player--active');
+};
 
 //rolling dice functionality
 btnRoll.addEventListener('click', function () {
@@ -40,12 +49,29 @@ btnRoll.addEventListener('click', function () {
       currentScore;
   } else {
     //switch to next player
-    document.getElementById(`current--${activePlayer}`).textContent = 0;
-    currentScore = 0;
-    activePlayer = activePlayer === 0 ? 1 : 0;
+    switchPlayer();
+  }
+});
 
-    //So we will use toggle now.And what toggle will do is that it will add the class if it is not there and if it is there, it will remove it
-    player0El.classList.toggle('player--active');
-    player1El.classList.toggle('player--active');
+//hold btn functionality
+btnHold.addEventListener('click', function () {
+  //1.add current score to active player score
+  scores[activePlayer] += currentScore;
+  console.log(scores[activePlayer]);
+  //scores[0]= scores[0]+ currentScore;
+  document.getElementById(`score--${activePlayer}`).textContent =
+    scores[activePlayer];
+  //2.check if player score is >= 100
+  if (scores[activePlayer] >= 100) {
+    //Finish the Game
+    document
+      .querySelector(`.player--${activePlayer}`)
+      .classList.add('player--winner');
+    document
+      .querySelector(`.player--${activePlayer}`)
+      .classList.remove('player--active');
+  } else {
+    //Switch to next player
+    switchPlayer();
   }
 });
